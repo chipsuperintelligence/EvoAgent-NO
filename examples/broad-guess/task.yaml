@@ -1,0 +1,16 @@
+# The built-in 1D PDE physics and tests, with a generator written as a broad first guess.
+#   evoagent-no run examples/broad-guess --no-agents   the generator as written
+#   evoagent-no run examples/broad-guess               agents rewrite it
+#   evoagent-no run examples/broad-guess --selfplay    self-play picks problems within each round
+name: broad-guess
+description: >
+  1D PDEs on a periodic interval, posed by a generator that knows the equation but not which
+  coefficients or amplitudes are useful. The student sees four frames and predicts the next.
+
+physics: evoagent_no.physics.pde1d
+heldout: evoagent_no.evals.pde1d
+
+training:
+  rounds: 80
+  problems_per_round: 128
+  eval_count: 32

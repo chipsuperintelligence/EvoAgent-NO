@@ -1,0 +1,18 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      # CPU-only PyTorch keeps the install small; the tests never need a GPU.
+      - run: uv venv && uv pip install --torch-backend cpu -e . pytest
+      - run: uv run --no-sync pytest -q
+      - run: uvx ruff check src tests examples --select F,E9

@@ -1,0 +1,21 @@
+# A 3D task with its own physics: the heat equation on the periodic unit cube, 16³ grid.
+name: heat3d
+description: >
+  The 3D heat equation on a periodic cube. The student sees the initial field and how far it
+  spreads, and predicts the field at the final time.
+
+physics: physics.py
+heldout: heldout.py
+
+student:
+  width: 16
+  modes: 6
+  layers: 3
+
+training:
+  problems_per_round: 64
+  batch: 16
+  eval_count: 16
+
+agents:
+  probe_problems: 32

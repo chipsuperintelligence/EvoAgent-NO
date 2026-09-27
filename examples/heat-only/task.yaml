@@ -1,0 +1,16 @@
+# The built-in 1D PDE physics and tests, starting from a generator that only poses the heat
+# equation. The LLM agents are what gets the student beyond it.
+#   evoagent-no run examples/heat-only --no-agents   the heat equation only
+#   evoagent-no run examples/heat-only               agents rewrite the generator
+name: heat-only
+description: >
+  1D PDEs on a periodic interval. The starting generator poses only the heat equation; the
+  answer key can solve nine terms. The student sees four frames and predicts the next.
+
+physics: evoagent_no.physics.pde1d
+heldout: evoagent_no.evals.pde1d
+
+training:
+  rounds: 60
+  problems_per_round: 128
+  eval_count: 32

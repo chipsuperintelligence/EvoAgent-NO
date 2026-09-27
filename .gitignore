@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+*.so
+runs/
+
+# internal design notes, kept out of the public repo
+docs/DESIGN.md

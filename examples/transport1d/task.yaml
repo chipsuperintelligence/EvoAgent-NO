@@ -1,0 +1,19 @@
+# A task with its own physics and held-out tests: the pattern for bringing your own problem.
+# Only settings that differ from the defaults need to be here (see evoagent_no/task.py).
+name: transport1d
+description: >
+  Linear transport u_t + c u_x = ν u_xx on a periodic interval. The student sees the initial
+  field and how far it moves and spreads, and predicts the field at the final time.
+
+physics: physics.py     # ./physics.py in this folder, not a built-in backend
+heldout: heldout.py
+
+student:
+  width: 32
+  modes: 12
+  layers: 3
+
+training:
+  problems_per_round: 128
+  batch: 128
+  eval_count: 32

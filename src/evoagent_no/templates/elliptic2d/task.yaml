@@ -1,0 +1,54 @@
+# An EvoAgent-NO task: everything needed to pretrain a student on invented problems.
+name: elliptic2d
+description: >
+  Steady diffusion −∇·(a∇u) = f on the unit square with u = 0 on the boundary. The student sees
+  the coefficient and the source and predicts the solution, a 2D input → output operator.
+
+physics: evoagent_no.physics.elliptic2d   # the answer key: a module path, or ./file.py in this folder
+heldout: evoagent_no.evals.elliptic2d     # test problems with references from other methods
+generator: generator.py                    # the question-maker; agents may rewrite its EVOLVE-BLOCK
+context: context.md                        # what the agents are told about this physics
+
+student:                                   # 2D Fourier neural operator
+  width: 32
+  modes: 12
+  layers: 4
+  padding: 4                               # the domain is not periodic
+  lr: 1.0e-3
+  schedule: cosine                     # cosine (warm-up, then decay to min_lr_ratio × lr) or constant
+  warmup_steps: 100
+  min_lr_ratio: 0.05
+  ema: 0.999                           # averaged student for tests and the saved model; 0 = off
+
+training:
+  rounds: 200
+  problems_per_round: 128
+  steps_per_round: 20
+  batch: 64
+  eval_every: 10
+  eval_count: 32
+
+selfplay:                              # optional: pick each round's problems by self-play
+  enabled: false                       # true, or `evoagent-no run --selfplay`
+  pool: {fresh: 0.4, mutated: 0.4, replay: 0.2}
+  score: relative                      # relative (default) or paper; see evoagent_no.score
+  too_hard: 4.0                        # loss > this × median of fresh problems: out of reach; null = off
+
+agents:                                # the slow loop: LLMs evolve generator.py
+  enabled: true                        # false, or `evoagent-no run --no-agents`: the baseline
+  every: 20                            # rounds between checks: is an evolution step worth it?
+  trigger: plateau                     # plateau: only when the student stops improving; every: always
+  min_improvement: 0.05                # plateau = training loss improved less than this over `every` rounds
+  candidates: 2                        # LLM calls per evolution step
+  parallel: 2                          # LLM calls in flight at once
+  probe_problems: 64                   # problems used to measure a generator on the student
+  islands: 2                           # separate populations of generators
+  migrate_every: 3                     # steps between islands swapping their best generator
+  rescore: 8                           # elites re-measured on the current student each step
+  inspirations: 2                      # other generators shown to the agent
+  edits: diff                          # diff (SEARCH/REPLACE, full file allowed) or full
+  llm:                                 # one model, or a list of them each with a `weight`
+    backend: claude-cli                # uses the Claude Code CLI login (your subscription)
+    model: claude-sonnet-5
+    effort: medium                     # low | medium | high | xhigh | max; null: the model's default
+    budget_usd: 1.0                    # cap per LLM call

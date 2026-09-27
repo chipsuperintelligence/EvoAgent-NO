@@ -1,0 +1,38 @@
+[project]
+name = "evoagent-no"
+version = "0.1.0"
+description = "LLM agents + neural operators + self-play: pretrain neural operators with zero data."
+readme = "README.md"
+license = "Apache-2.0"
+authors = [{ name = "Chips & Superintelligence Labs", email = "hello@chipsuperintelligence.com" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "pyyaml>=6.0",
+    "scipy>=1.11",
+    "torch>=2.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/chipsuperintelligence/EvoAgent-NO"
+Repository = "https://github.com/chipsuperintelligence/EvoAgent-NO"
+Issues = "https://github.com/chipsuperintelligence/EvoAgent-NO/issues"
+
+[project.optional-dependencies]
+openai = ["openai>=1.40"]
+
+[project.scripts]
+evoagent-no = "evoagent_no.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/evoagent_no"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
